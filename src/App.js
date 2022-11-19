@@ -1,65 +1,80 @@
-import './App.css';
-import Axios from 'axios';
+import './App.scss';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+
 
 function App() {
 
   const [search, setSearch] = useState('');
+  const [loadingData, setLoadingData] = useState(true);
   const [crypto, setCrypto] = useState([]);
 
   useEffect(() => {
-    Axios.get(
-      `https://api.coinstats.app/public/v1/coins?skip=0&limit=10&currency=USD`
-    ).then((res) => {
-      setCrypto(res.data.coins);
-    });
-  }, []);
+    async function getData() {
+      await axios 
+        .get(`https://api.coinstats.app/public/v1/coins?skip=0&limit=20&currency=USD`)
+        .then((res) => {
+          console.log(res.data);
+          setCrypto(res.data.coins);
+          setLoadingData(false);
+      });
+    }
+    if (loadingData) {
+      // if the result is not ready so you make the axios call
+      getData();
+    }
+  }, [loadingData]);
+
+
 
 return (
-  <>
+  
+  
   <div className="App">
-
-  <div className="hero" style={{display:"flex", flexDirection:"column", padding:"2em"}} data-theme="dark">
-   
-    <hgroup>
-            <h2>Crypto Tracker</h2>
-            <h3>Search or select from Dropdown</h3>
-          </hgroup>
-      
-      
-          <label for="search" style={{maxWidth:"70%"}}>
-            <input type="search" 
-              id="search" 
-              name="search" 
-              placeholder="Search"
-              onChange={(e) => {
-                setSearch(e.target.value);
-              }} 
-              />
-          </label>
-    
-  </div>
-
   
 
-  <main className="container">
+    <header data-theme="dark" className="hero">
+      <hgroup className="headings">
+          <h2>Crypto Tracker</h2>
+          <h3>Latest Crypto Data</h3>
+      </hgroup>
       
-
+      
+      
+      
+      <label for="search" style={{maxWidth:"70%"}}>
+          <input type="search" 
+            id="search" 
+            name="search" 
+            placeholder="Search for a Crypto"
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }} 
+            />
+        </label>  
+    </header>
+  
   
 
+  <main>
+      <article className="container">
+  
 
-      <article>
-        <section>
-      <table role="grid">
+          {/* check if state is loading */}
+      {loadingData ? (
+        <div aria-busy="true">Loading Please Wait...</div>
+      ) : (
+
+      <table row="grid">
       
           <thead>
             <tr>
-              <th >Rank</th>
-              <th >Name</th>
-              <th >Symbol</th>
-              <th >Market Cap</th>
-              <th >Price</th>
-              <th >Available Supply</th>
+              <th scope="col">Rank</th>
+              <th scope="col">Name</th>
+              <th scope="col">Symbol</th>
+              <th scope="col">Market Cap</th>
+              <th scope="col">Price</th>
+              <th scope="col">Available Supply</th>
             </tr>
           </thead>
         
@@ -72,7 +87,7 @@ return (
             return (
               <>
               <tr id={id}>
-                <th className="rank">{val.rank}</th>
+                <th className="rank" scope="row">{val.rank}</th>
                 <td className='logo'>
                   <a href={val.websiteUrl}>
                     <img src={val.icon} alt="logo" width="30px" />
@@ -90,15 +105,17 @@ return (
           })}
       </tbody>
       
-      <footer>Cryptochecker.com</footer>
+      
     </table>
-    </section>
+    
+    )}
+
+    <footer>Cryptochecker.com</footer>
     </article>
     
     </main>
     
   </div>
-  </>
   );
 }
 
