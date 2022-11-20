@@ -5,6 +5,6 @@ export default defineConfig ({
   plugins: [reactRefresh()],
   build: {
     outDir: 'docs',
-    base: './'
+    base: '/crypto-app/'
   }
 })
