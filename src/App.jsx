@@ -1,6 +1,6 @@
 import './App.scss';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 function App() {
@@ -42,7 +42,7 @@ return (
       
       
       
-      <label for="search" style={{maxWidth:"70%"}}>
+      <label htmlFor="search" style={{maxWidth:"70%"}}>
           <input type="search" 
             id="search" 
             name="search" 
@@ -83,10 +83,9 @@ return (
         <tbody>
           {crypto.filter((val) => {
             return val.name.toLowerCase().includes(search.toLowerCase());
-          }).map((val, id) => {
+          }).map((val, key) => {
             return (
-              <>
-              <tr id={id}>
+              <tr key={key}>
                 <th className="rank" scope="row">{val.rank}</th>
                 <td className='logo'>
                   <a href={val.websiteUrl}>
@@ -99,7 +98,6 @@ return (
                 <td>{val.price.toFixed(2)}</td>
                 <td>{val.availableSupply}</td>
               </tr>
-              </>
             );
           
           })}
